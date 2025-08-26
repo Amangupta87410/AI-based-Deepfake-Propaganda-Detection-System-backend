@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-based Deepfake & Propaganda Detection System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .glowing-border {
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5), 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+        .result-card {
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .result-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <i class="fas fa-shield-alt text-4xl text-blue-400"></i>
+                <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">Trinesta Security</h1>
+            </div>
+            <p class="text-lg font-semibold">AI-based Deepfake & Propaganda Detection System</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="glass-effect rounded-2xl p-6 md:p-8 glowing-border">
+            
+            <!-- Input Section -->
+            <div class="mb-6">
+                <label for="content-url" class="block text-sm font-medium text-gray-300 mb-2">Analyze Multimedia Content</label>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="content-url" class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Video, Image, or Post URL...">
+                    <button id="analyze-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 flex items-center justify-center gap-2">
+                        <i class="fas fa-search"></i>
+                        <span id="analyze-btn-text">Analyze</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-container" class="mt-8 space-y-6">
+                <!-- Loader -->
+                <div id="loader" class="hidden text-center py-6">
+                    <div class="flex items-center justify-center gap-3">
+                        <i class="fas fa-spinner fa-spin text-3xl text-blue-400"></i>
+                        <p class="text-lg">Contacting analysis server... This may take a moment.</p>
+                    </div>
+                </div>
+
+                <!-- Analysis Results -->
+                <div id="analysis-results" class="hidden">
+                    <h2 class="text-2xl font-bold mb-4 border-b border-gray-700 pb-2">Analysis Report</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        
+                        <!-- Key Findings Card -->
+                        <div id="key-findings-card" class="result-card bg-gray-800/50 p-5 rounded-xl">
+                            <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i class="fas fa-star text-yellow-400"></i> Key Findings</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Deepfake Detection:</span>
+                                    <span id="deepfake-status" class="font-bold text-lg px-3 py-1 rounded-full"></span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Confidence Score:</span>
+                                    <span id="confidence-score" class="font-bold text-lg"></span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Manipulation Type:</span>
+                                    <span id="manipulation-type" class="font-medium"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Threat Classification Card -->
+                        <div id="threat-card" class="result-card bg-gray-800/50 p-5 rounded-xl">
+                            <h3 class="font-semibold text-lg mb-4 flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-400"></i> Threat Classification</h3>
+                            <div id="threat-level" class="text-center p-4 rounded-lg">
+                                <p class="text-2xl font-bold" id="threat-name"></p>
+                                <p class="text-sm" id="threat-desc"></p>
+                            </div>
+                        </div>
+
+                        <!-- Authenticity Verification Card -->
+                        <div id="auth-card" class="result-card md:col-span-2 bg-gray-800/50 p-5 rounded-xl">
+                            <h3 class="font-semibold text-lg mb-3 flex items-center gap-2"><i class="fas fa-check-circle text-green-400"></i> Authenticity Verification</h3>
+                            <p id="auth-details" class="text-gray-300"></p>
+                        </div>
+
+                        <!-- Counter Narrative Card -->
+                        <div id="counter-card" class="result-card md:col-span-2 bg-gray-800/50 p-5 rounded-xl">
+                            <h3 class="font-semibold text-lg mb-3 flex items-center gap-2"><i class="fas fa-bullhorn text-teal-300"></i> Auto-Generated Counter Narrative</h3>
+                            <div class="bg-gray-900 p-4 rounded-md">
+                                <p id="counter-narrative" class="text-gray-200 italic"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Error Message -->
+                <div id="error-message" class="hidden text-center py-4 bg-red-900/50 border border-red-700 rounded-lg">
+                    <p>Please enter a valid URL to start the analysis.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- DOM ELEMENTS ---
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const analyzeBtnText = document.getElementById('analyze-btn-text');
+        const urlInput = document.getElementById('content-url');
+        const loader = document.getElementById('loader');
+        const analysisResults = document.getElementById('analysis-results');
+        const errorMessage = document.getElementById('error-message');
+        const resultCards = document.querySelectorAll('.result-card');
+        
+        // --- RESULT ELEMENTS ---
+        const deepfakeStatus = document.getElementById('deepfake-status');
+        const confidenceScore = document.getElementById('confidence-score');
+        const manipulationType = document.getElementById('manipulation-type');
+        const threatLevel = document.getElementById('threat-level');
+        const threatName = document.getElementById('threat-name');
+        const threatDesc = document.getElementById('threat-desc');
+        const authDetails = document.getElementById('auth-details');
+        const counterNarrative = document.getElementById('counter-narrative');
+
+        // --- BACKEND API URL ---
+        const API_URL = 'https://ai-based-deepfake-propaganda-detection.onrender.com/api/analyze';
+
+        // --- EVENT LISTENER ---
+        analyzeBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!isValidUrl(url)) {
+                showError('Please enter a valid URL to start the analysis.');
+                return;
+            }
+
+            setLoadingState(true);
+            
+            try {
+                // --- REAL API CALL TO THE BACKEND ---
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                populateResults(result);
+                showResults();
+
+            } catch (error) {
+                console.error("Analysis failed:", error);
+                showError("Analysis failed. Is the backend server running?");
+            } finally {
+                setLoadingState(false);
+            }
+        });
+
+        // --- UI HELPER FUNCTIONS ---
+        function setLoadingState(isLoading) {
+            if (isLoading) {
+                analyzeBtn.disabled = true;
+                analyzeBtnText.textContent = 'Analyzing...';
+                analysisResults.classList.add('hidden');
+                errorMessage.classList.add('hidden');
+                loader.classList.remove('hidden');
+                resultCards.forEach(card => card.classList.remove('show'));
+            } else {
+                analyzeBtn.disabled = false;
+                analyzeBtnText.textContent = 'Analyze';
+                loader.classList.add('hidden');
+            }
+        }
+
+        function showResults() {
+            analysisResults.classList.remove('hidden');
+            let delay = 0;
+            resultCards.forEach(card => {
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, delay);
+                delay += 150;
+            });
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            analysisResults.classList.add('hidden');
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        function populateResults(result) {
+            deepfakeStatus.textContent = result.isDeepfake ? 'Detected' : 'Not Detected';
+            deepfakeStatus.className = result.isDeepfake 
+                ? 'font-bold text-lg px-3 py-1 rounded-full bg-red-500 text-white' 
+                : 'font-bold text-lg px-3 py-1 rounded-full bg-green-500 text-white';
+            confidenceScore.textContent = `${result.confidence}%`;
+            manipulationType.textContent = result.manipulationType;
+            threatName.textContent = result.threat.name;
+            threatDesc.textContent = `(${result.threat.level} Impact)`;
+            threatLevel.className = `text-center p-4 rounded-lg ${result.threat.color}`;
+            authDetails.textContent = result.authDetails;
+            counterNarrative.textContent = result.counterNarrate;
+        }
+    </script>
+</body>
+</html>
